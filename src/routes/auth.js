@@ -37,13 +37,14 @@ export default server => {
 
       if (user.password === req.body.password) {
         logger.info(`User ${user.username} is authenticated.`);
-        const message = "ok";
         const token = jwt.sign({ id: user.username }, secret);
-        res.json({ message, token });
+        res
+          .status(201)
+          .set("Content-Type", "plain/text")
+          .send(token);
       } else {
         logger.info(`User ${user.username} is not authenticated.`);
-        const message = "Invalid username or password";
-        res.status(401).json({ message });
+        res.status(401).json({ error: "Invalid username or password" });
       }
     } catch (e) {
       res.json({ message: e });
