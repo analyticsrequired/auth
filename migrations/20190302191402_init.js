@@ -3,8 +3,11 @@ const tableName = "users";
 exports.up = knex =>
   knex.schema.createTable(tableName, table => {
     table.increments();
-    table.string("username");
-    table.string("password");
+    table
+      .string("username")
+      .unique()
+      .notNullable();
+    table.string("password").notNullable();
     table.timestamps(true, true);
   });
 
