@@ -1,6 +1,7 @@
 import express from "express";
 import expressWinston from "express-winston";
 import root from "./routes/root";
+import auth from "./routes/auth";
 import logger from "./logger";
 
 const server = express();
@@ -11,8 +12,6 @@ server.use(
     extended: true
   })
 );
-
-expressWinston.requestWhitelist.push("body");
 
 server.use(
   expressWinston.logger({
@@ -27,5 +26,6 @@ server.use(
 // Routes
 
 root(server);
+auth(server);
 
 export default server;
