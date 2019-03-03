@@ -32,8 +32,8 @@ export default server => {
 
       if (!user) {
         logger.info(`User ${req.body.id} requested token but wasn't found`);
-
         res.status(401).json({ error: "Invalid username or password" });
+        return;
       }
 
       if (user.password === req.body.password) {
@@ -48,6 +48,8 @@ export default server => {
           .status(201)
           .set("Content-Type", "plain/text")
           .send(token);
+
+        return;
       }
 
       logger.info(`User ${user.username} was is not able to be authenticated.`);
