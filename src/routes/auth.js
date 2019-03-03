@@ -39,7 +39,10 @@ export default server => {
       if (user.password === req.body.password) {
         logger.info(`User ${user.username} is authenticated.`);
 
-        const token = jwt.sign({ id: user.username }, secret);
+        const token = jwt.sign(
+          { id: user.username, permissions: user.scope.split(" ") },
+          secret
+        );
 
         res
           .status(201)
