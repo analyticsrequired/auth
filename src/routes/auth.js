@@ -31,8 +31,8 @@ export default server => {
       const user = await userService.getByUsername(req.body.id);
 
       if (!user) {
-        logger.info(`User ${req.body.id} not found`);
-        res.status(401).json({ message: "Invalid username or password" });
+        logger.info(`User ${req.body.id} requested token but wasn't found`);
+        res.status(401).json({ error: "Invalid username or password" });
       }
 
       if (user.password === req.body.password) {
