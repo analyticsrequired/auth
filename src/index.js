@@ -2,14 +2,4 @@ import server from "./server";
 
 const port = process.env.NODE_ENV === "production" ? process.env.PORT : 3001;
 
-const banner = `
-    ___                __      __  _              ____                   _               __
-   /   |  ____  ____ _/ /_  __/ /_(_)_________   / __ \\___  ____ ___  __(_)_______  ____/ /
-  / /| | / __ \\/ __ '/ / / / / __/ / ___/ ___/  / /_/ / _ \\/ __ '/ / / / / ___/ _ \\/ __  / 
- / ___ |/ / / / /_/ / / /_/ / /_/ / /__(__  )  / _, _/  __/ /_/ / /_/ / / /  /  __/ /_/ /  
-/_/  |_/_/ /_/\\__,_/_/\\__, /\\__/_/\\___/____/  /_/ |_|\\___/\\__, /\\__,_/_/_/   \\___/\\__,_/   
-                     /____/                                 /_/                            `;
-
-server.listen(port, () =>
-  console.log(`${banner}\n\nAuth started on port: ${port}!`)
-);
+server.listen(port, () => console.log(`Auth started on port: ${port}!`));
