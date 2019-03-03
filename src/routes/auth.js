@@ -32,20 +32,24 @@ export default server => {
 
       if (!user) {
         logger.info(`User ${req.body.id} requested token but wasn't found`);
+
         res.status(401).json({ error: "Invalid username or password" });
       }
 
       if (user.password === req.body.password) {
         logger.info(`User ${user.username} is authenticated.`);
+
         const token = jwt.sign({ id: user.username }, secret);
+
         res
           .status(201)
           .set("Content-Type", "plain/text")
           .send(token);
-      } else {
-        logger.info(`User ${user.username} is not authenticated.`);
-        res.status(401).json({ error: "Invalid username or password" });
       }
+
+      logger.info(`User ${user.username} was is not able to be authenticated.`);
+
+      res.status(401).json({ error: "Invalid username or password" });
     } catch (e) {
       res.json({ message: e });
     }
@@ -53,8 +57,8 @@ export default server => {
 
   server.post("/register", async (req, res) => {
     try {
-      const user = await userService.register(req.body.id, req.body.password);
-      res.json(user);
+      await userService.register(req.body.id, req.body.password);
+      res.status(201).end();
     } catch (e) {
       res.status(400).send(e);
     }
