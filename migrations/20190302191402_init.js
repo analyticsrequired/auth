@@ -8,6 +8,7 @@ exports.up = knex =>
       .unique()
       .notNullable();
     table.string("password").notNullable();
+    table.string("scope").defaultTo("");
     table.timestamps(true, true);
   });
 
