@@ -57,10 +57,27 @@ export default server => {
 
   server.post("/register", async (req, res) => {
     try {
-      await userService.register(req.body.id, req.body.password);
+      const { id, password } = req.body;
+
+      if (!id || !password) {
+        res.status(400).json({ error: "Username and password required" });
+      }
+
+      const user = await userService.getByUsername(id);
+
+      if (user) {
+        logger.info(`Duplicated user registration: ${id}`);
+        res.status(401).json({ error: "User already exists" });
+        return;
+      }
+
+      await userService.register(id, password);
       res.status(201).end();
     } catch (e) {
-      res.status(400).send(e);
+      logger.info(`Error occured while registering user ${id}: ${e}`);
+      res.status(500).json({
+        error: "An error occurred during registration. Please resubmit."
+      });
     }
   });
 };
