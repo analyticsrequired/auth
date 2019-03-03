@@ -1,12 +1,21 @@
+const assert = require("assert");
+
+const { PG_USER, PG_PASSWORD, DATABASE_URL } = process.env;
+
+assert(PG_USER, "Environment variable PG_USER not set");
+assert(PG_PASSWORD, "Environment variable PG_PASSWORD not set");
+
 module.exports = {
   local: {
-    client: "sqlite3",
+    client: "pg",
     connection: {
-      filename: "./local.sqlite3"
+      host: "localhost",
+      user: PG_USER,
+      password: PG_PASSWORD
     }
   },
   production: {
     client: "pg",
-    connection: process.env.DATABASE_URL
+    connection: DATABASE_URL
   }
 };
