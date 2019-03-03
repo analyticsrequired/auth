@@ -27,13 +27,6 @@ export default server => {
 
   server.use(passport.initialize());
 
-  server.get(`/auth/user/:username`, (req, res) => {
-    userService
-      .getByUsername(req.params.username)
-      .then(user => res.json(user))
-      .catch(err => res.status(400).send(err));
-  });
-
   server.post("/auth/token", (req, res) => {
     userService
       .getByUsername(req.body.id)
