@@ -17,43 +17,45 @@ export default server => {
         jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeaderWithScheme("jwt"),
         secretOrKey: secret
       },
-      (payload, next) => {
-        userService
-          .getByUsername(payload.id)
-          .then(user => (user ? next(null, user) : next(null, false)));
+      async (payload, next) => {
+        const user = await userService.getByUsername(payload.id);
+        user ? next(null, user) : next(null, false);
       }
     )
   );
 
   server.use(passport.initialize());
 
-  server.post("/auth/token", (req, res) => {
-    userService
-      .getByUsername(req.body.id)
-      .then(user => {
-        if (!user) {
-          logger.info(`User ${req.body.id} not found`);
-          res.status(401).json({ message: "Invalid username or password" });
-        }
+  server.post("/auth/token", async (req, res) => {
+    try {
+      const user = await userService.getByUsername(req.body.id);
 
-        if (user.password === req.body.password) {
-          logger.info(`User ${user.username} is authenticated.`);
-          const message = "ok";
-          const token = jwt.sign({ id: user.username }, secret);
-          res.json({ message, token });
-        } else {
-          logger.info(`User ${user.username} is not authenticated.`);
-          const message = "Invalid username or password";
-          res.status(401).json({ message });
-        }
-      })
-      .catch(err => res.json({ message: err }));
+      if (!user) {
+        logger.info(`User ${req.body.id} not found`);
+        res.status(401).json({ message: "Invalid username or password" });
+      }
+
+      if (user.password === req.body.password) {
+        logger.info(`User ${user.username} is authenticated.`);
+        const message = "ok";
+        const token = jwt.sign({ id: user.username }, secret);
+        res.json({ message, token });
+      } else {
+        logger.info(`User ${user.username} is not authenticated.`);
+        const message = "Invalid username or password";
+        res.status(401).json({ message });
+      }
+    } catch (e) {
+      res.json({ message: e });
+    }
   });
 
-  server.post("/auth/register", (req, res) => {
-    userService
-      .register(req.body.id, req.body.password)
-      .then(user => res.json(user))
-      .catch(err => res.status(400).send(err));
+  server.post("/auth/register", async (req, res) => {
+    try {
+      const user = await userService.register(req.body.id, req.body.password);
+      res.json(user);
+    } catch (e) {
+      res.status(400).send(e);
+    }
   });
 };
