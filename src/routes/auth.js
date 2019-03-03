@@ -48,7 +48,7 @@ export default server => {
           const message = "ok";
           const token = jwt.sign({ id: user.username }, jwtOptions.secretOrKey);
           logger.info(`Generating token for ${user.username}. Token: ${token}`);
-          res.json({ message, token });
+          res.json({ message, token, test: true });
         } else {
           logger.info(`User ${user.username} is not authenticated.`);
           const message = "Invalid username or password";
