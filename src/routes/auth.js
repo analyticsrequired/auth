@@ -26,7 +26,7 @@ export default server => {
 
   server.use(passport.initialize());
 
-  server.post("/auth/token", async (req, res) => {
+  server.post("/token", async (req, res) => {
     try {
       const user = await userService.getByUsername(req.body.id);
 
@@ -50,7 +50,7 @@ export default server => {
     }
   });
 
-  server.post("/auth/register", async (req, res) => {
+  server.post("/register", async (req, res) => {
     try {
       const user = await userService.register(req.body.id, req.body.password);
       res.json(user);
