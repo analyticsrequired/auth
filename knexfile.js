@@ -2,8 +2,10 @@ const assert = require("assert");
 
 const { PG_USER, PG_PASSWORD, DATABASE_URL } = process.env;
 
-assert(PG_USER, "Environment variable PG_USER not set");
-assert(PG_PASSWORD, "Environment variable PG_PASSWORD not set");
+if (process.env.NODE_ENV === "local") {
+  assert(PG_USER, "Environment variable PG_USER not set");
+  assert(PG_PASSWORD, "Environment variable PG_PASSWORD not set");
+}
 
 module.exports = {
   local: {
