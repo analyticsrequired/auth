@@ -7,6 +7,8 @@ if (process.env.NODE_ENV === "local") {
   assert(PG_PASSWORD, "Environment variable PG_PASSWORD not set");
 }
 
+const schemaName = "ar_auth";
+
 module.exports = {
   local: {
     client: "pg",
@@ -14,10 +16,16 @@ module.exports = {
       host: "localhost",
       user: PG_USER,
       password: PG_PASSWORD
+    },
+    migrations: {
+      schemaName
     }
   },
   production: {
     client: "pg",
-    connection: DATABASE_URL
+    connection: DATABASE_URL,
+    migrations: {
+      schemaName
+    }
   }
 };
