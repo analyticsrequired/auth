@@ -28,18 +28,6 @@ Returns JWT if authentication succeeds.
 }
 ```
 
-#### Example JWT Payload
-
-Permissions are translated to an array from the [scope string set on the user](https://www.npmjs.com/package/express-jwt-permissions#usage) in the database.
-
-```json
-{
-  "id": "username",
-  "permissions": ["admin"],
-  "iat": 1551666744
-}
-```
-
 #### Returns
 
 | Status      | Body       | Content-Type |
@@ -54,8 +42,15 @@ Register a new user. Required for generating JWTs.
 
 ```json
 {
-  "id": "username",
   "password": "password"
+}
+```
+
+#### Example Headers
+
+```json
+{
+  "Authorization": "JWT {TOKEN_FROM_INVITE}"
 }
 ```
 
@@ -64,6 +59,16 @@ Register a new user. Required for generating JWTs.
 | Status      |
 | :---------- |
 | 201 CREATED |
+
+### POST /invite/:username
+
+Generates invitation JWT for username.
+
+#### Returns
+
+| Status      | Body       | Content-Type |
+| :---------- | :--------- | :----------- |
+| 201 CREATED | JWT string | text/plain   |
 
 ## Scripts
 
