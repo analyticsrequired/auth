@@ -8,7 +8,9 @@ export default class UserService {
       .first()
       .where({ username });
 
-    user.permissions = user.scope.split(" ");
+    if (user) {
+      user.permissions = user.scope.split(" ");
+    }
 
     return user;
   }
