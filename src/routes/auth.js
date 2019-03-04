@@ -1,30 +1,9 @@
-import assert from "assert";
 import jwt from "jsonwebtoken";
-import passport from "passport";
-import passportJWT from "passport-jwt";
 import UserService from "../services/user";
 import logger from "../logger";
 
 export default server => {
-  assert(process.env.JWT_SECRET, "Environment variable JWT_SECRET not set");
-
-  const secret = process.env.JWT_SECRET;
   const userService = new UserService();
-
-  passport.use(
-    new passportJWT.Strategy(
-      {
-        jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeaderWithScheme("jwt"),
-        secretOrKey: secret
-      },
-      async (payload, next) => {
-        const user = await userService.getByUsername(payload.id);
-        user ? next(null, user) : next(null, false);
-      }
-    )
-  );
-
-  server.use(passport.initialize());
 
   server.post("/token", async (req, res) => {
     try {
@@ -39,9 +18,11 @@ export default server => {
       if (user.password === req.body.password) {
         logger.info(`User ${user.username} is authenticated.`);
 
+        const permissions = user.scope.split(" ");
+
         const token = jwt.sign(
-          { id: user.username, permissions: user.scope.split(" ") },
-          secret
+          { id: user.username, permissions },
+          process.env.JWT_SECRET
         );
 
         res
