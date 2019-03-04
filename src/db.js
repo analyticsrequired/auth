@@ -6,4 +6,4 @@ const env = process.env.NODE_ENV || "local";
 
 const config = knexfile[env];
 
-export default knex(config).withSchema("ar_auth");
+export default knex(config);
