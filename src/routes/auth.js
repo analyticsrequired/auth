@@ -46,23 +46,26 @@ export default server => {
   });
 
   server.post(
-    "/invite/:id",
+    "/invite/:username",
     passport.authenticate("jwt", { session: false }),
     guard.check(["admin"]),
     async (req, res) => {
-      const user = await userService.getByUsername(req.params.id);
+      const { username } = req.params;
+      const { username: inviter } = req.user;
+
+      const user = await userService.getByUsername(username);
 
       if (user) {
-        logger.info(`Duplicated user registration: ${req.params.id}`);
+        logger.info(`Duplicated user registration: ${username}`);
         res.status(400).json({ error: "User already exists" });
         return;
       }
 
       const token = jwt.sign(
         {
-          id: req.params.id,
+          id: username,
           permissions: ["invitation"],
-          inviter: req.user.username
+          inviter
         },
         process.env.JWT_SECRET
       );
