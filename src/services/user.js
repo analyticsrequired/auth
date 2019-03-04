@@ -3,10 +3,14 @@ import db from "../db";
 const tableName = "users";
 
 export default class UserService {
-  getByUsername(username) {
-    return db(tableName)
+  async getByUsername(username) {
+    const user = await db(tableName)
       .first()
       .where({ username });
+
+    user.permissions = user.scope.split(" ");
+
+    return user;
   }
 
   register(username, password) {

@@ -1,30 +1,13 @@
-import assert from "assert";
 import jwt from "jsonwebtoken";
-import passport from "passport";
-import passportJWT from "passport-jwt";
 import UserService from "../services/user";
 import logger from "../logger";
+import passport from "passport";
+import expressJwtPermissions from "express-jwt-permissions";
+
+const guard = expressJwtPermissions();
 
 export default server => {
-  assert(process.env.JWT_SECRET, "Environment variable JWT_SECRET not set");
-
-  const secret = process.env.JWT_SECRET;
   const userService = new UserService();
-
-  passport.use(
-    new passportJWT.Strategy(
-      {
-        jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeaderWithScheme("jwt"),
-        secretOrKey: secret
-      },
-      async (payload, next) => {
-        const user = await userService.getByUsername(payload.id);
-        user ? next(null, user) : next(null, false);
-      }
-    )
-  );
-
-  server.use(passport.initialize());
 
   server.post("/token", async (req, res) => {
     try {
@@ -39,9 +22,11 @@ export default server => {
       if (user.password === req.body.password) {
         logger.info(`User ${user.username} is authenticated.`);
 
+        const permissions = user.scope.split(" ");
+
         const token = jwt.sign(
-          { id: user.username, permissions: user.scope.split(" ") },
-          secret
+          { id: user.username, permissions },
+          process.env.JWT_SECRET
         );
 
         res
@@ -60,30 +45,69 @@ export default server => {
     }
   });
 
-  server.post("/register", async (req, res) => {
-    try {
-      const { id, password } = req.body;
-
-      if (!id || !password) {
-        res.status(400).json({ error: "Username and password required" });
-        return;
-      }
-
-      const user = await userService.getByUsername(id);
+  server.post(
+    "/invite/:id",
+    passport.authenticate("jwt", { session: false }),
+    guard.check(["admin"]),
+    async (req, res) => {
+      const user = await userService.getByUsername(req.params.id);
 
       if (user) {
-        logger.info(`Duplicated user registration: ${id}`);
-        res.status(401).json({ error: "User already exists" });
+        logger.info(`Duplicated user registration: ${req.params.id}`);
+        res.status(400).json({ error: "User already exists" });
         return;
       }
 
-      await userService.register(id, password);
-      res.status(201).end();
-    } catch (e) {
-      logger.info(`Error occured while registering user ${req.body.id}: ${e}`);
-      res.status(500).json({
-        error: "An error occurred during registration. Please resubmit."
-      });
+      const token = jwt.sign(
+        {
+          id: req.params.id,
+          permissions: ["invitation"],
+          inviter: req.user.username
+        },
+        process.env.JWT_SECRET
+      );
+
+      res
+        .status(201)
+        .set("Content-Type", "plain/text")
+        .send(token);
     }
-  });
+  );
+
+  server.post(
+    "/register",
+    passport.authenticate("jwt", { session: false }),
+    guard.check(["invitation"]),
+    async (req, res) => {
+      try {
+        const { id, inviter } = req.user;
+        const { password } = req.body;
+
+        logger.info(`Registration from invite: ${id} invited by ${inviter}`);
+
+        if (!id || !password) {
+          res.status(400).json({ error: "Username and password required" });
+          return;
+        }
+
+        const user = await userService.getByUsername(id);
+
+        if (user) {
+          logger.info(`Duplicated user registration: ${id}`);
+          res.status(400).json({ error: "User already exists" });
+          return;
+        }
+
+        await userService.register(id, password);
+        res.status(201).end();
+      } catch (e) {
+        logger.info(
+          `Error occured while registering user ${req.body.id}: ${e}`
+        );
+        res.status(500).json({
+          error: "An error occurred during registration. Please resubmit."
+        });
+      }
+    }
+  );
 };

@@ -1,8 +1,14 @@
+import assert from "assert";
 import express from "express";
 import expressWinston from "express-winston";
+import passport from "passport";
+import passportJWT from "passport-jwt";
 import root from "./routes/root";
 import auth from "./routes/auth";
 import logger from "./logger";
+import UserService from "./services/user";
+
+assert(process.env.JWT_SECRET, "Environment variable JWT_SECRET not set");
 
 const server = express();
 
@@ -23,9 +29,40 @@ server.use(
   })
 );
 
+// Passport
+
+passport.use(
+  new passportJWT.Strategy(
+    {
+      jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeaderWithScheme("jwt"),
+      secretOrKey: process.env.JWT_SECRET
+    },
+    async (payload, next) => {
+      let user;
+
+      if (payload.permissions.includes("invitation")) {
+        user = payload;
+      } else {
+        const userService = new UserService();
+        user = await userService.getByUsername(payload.id);
+      }
+
+      user ? next(null, user) : next(null, false);
+    }
+  )
+);
+
+server.use(passport.initialize());
+
 // Routes
 
 root(server);
 auth(server);
+
+server.use(function(err, req, res, next) {
+  if (err.code === "permission_denied") {
+    res.status(403).end();
+  }
+});
 
 export default server;
