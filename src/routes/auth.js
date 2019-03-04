@@ -66,6 +66,7 @@ export default server => {
 
       if (!id || !password) {
         res.status(400).json({ error: "Username and password required" });
+        return;
       }
 
       const user = await userService.getByUsername(id);
