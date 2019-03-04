@@ -13,6 +13,10 @@ An authentication service that serves JWTs.
 
 - `$ npm run start:dev`
 
+### JWT_SECRET
+
+JWTs generated are signed by the `JWT_SECRET` environment variable which must be set before starting server.
+
 ## Endpoints
 
 ### POST /invite/:username
