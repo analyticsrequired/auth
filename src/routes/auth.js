@@ -50,6 +50,14 @@ export default server => {
     passport.authenticate("jwt", { session: false }),
     guard.check(["admin"]),
     async (req, res) => {
+      const user = await userService.getByUsername(req.params.id);
+
+      if (user) {
+        logger.info(`Duplicated user registration: ${req.params.id}`);
+        res.status(400).json({ error: "User already exists" });
+        return;
+      }
+
       const token = jwt.sign(
         {
           id: req.params.id,
