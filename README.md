@@ -15,18 +15,13 @@ An authentication service that serves JWTs.
 
 ## Endpoints
 
-### POST /token
+### POST /invite/:username
 
-Returns JWT if authentication succeeds.
+Generates invitation JWT for username.
 
-#### Example Body
+### Permissions Required
 
-```json
-{
-  "id": "username",
-  "password": "password"
-}
-```
+- admin
 
 #### Returns
 
@@ -34,9 +29,24 @@ Returns JWT if authentication succeeds.
 | :---------- | :--------- | :----------- |
 | 201 CREATED | JWT string | text/plain   |
 
+##### JWT Payload
+
+```json
+{
+  "id": "username",
+  "permissions": ["invitation"],
+  "inviter": "invitersUsername",
+  "iat": 0000000000
+}
+```
+
 ### POST /register
 
 Register a new user. Required for generating JWTs.
+
+### Permissions Required
+
+- invitation
 
 #### Example Body
 
@@ -60,15 +70,36 @@ Register a new user. Required for generating JWTs.
 | :---------- |
 | 201 CREATED |
 
-### POST /invite/:username
+### POST /token
 
-Generates invitation JWT for username.
+Returns JWT if authentication succeeds.
+
+#### Example Body
+
+```json
+{
+  "id": "username",
+  "password": "password"
+}
+```
 
 #### Returns
 
 | Status      | Body       | Content-Type |
 | :---------- | :--------- | :----------- |
 | 201 CREATED | JWT string | text/plain   |
+
+##### JWT Payload
+
+```json
+{
+  "id": "username",
+  "permissions": [
+    /* ...users permissions */
+  ],
+  "iat": 0000000000
+}
+```
 
 ## Scripts
 
