@@ -94,9 +94,7 @@ Returns JWT if authentication succeeds.
 ```json
 {
   "id": "username",
-  "permissions": [
-    /* ...users permissions */
-  ],
+  "permissions": ["... users permissions"],
   "iat": 0000000000
 }
 ```
