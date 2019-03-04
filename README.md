@@ -40,6 +40,12 @@ Permissions are translated to an array from the [scope string set on the user](h
 }
 ```
 
+#### Returns
+
+| Status      | Body       | Content-Type |
+| :---------- | :--------- | :----------- |
+| 201 CREATED | JWT string | text/plain   |
+
 ### POST /register
 
 Register a new user. Required for generating JWTs.
@@ -55,7 +61,9 @@ Register a new user. Required for generating JWTs.
 
 #### Returns
 
-HTTP 201 CREATED
+| Status      |
+| :---------- |
+| 201 CREATED |
 
 ## Scripts
 
