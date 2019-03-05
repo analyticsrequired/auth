@@ -15,7 +15,7 @@ export default class UserService {
     return user;
   }
 
-  register(username, password) {
-    return db(tableName).insert({ username, password });
+  register(username, password, grant = []) {
+    return db(tableName).insert({ username, password, scope: grant.join(" ") });
   }
 }

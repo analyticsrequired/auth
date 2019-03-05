@@ -18,7 +18,7 @@ export const handler = async (req, res) => {
   const userService = new UserService();
 
   try {
-    const { id, inviter } = req.user;
+    const { id, inviter, grant } = req.user;
     const { password } = req.body;
 
     logger.info(`Registration from invite: ${id} invited by ${inviter}`);
@@ -36,7 +36,7 @@ export const handler = async (req, res) => {
       return;
     }
 
-    await userService.register(id, password);
+    await userService.register(id, password, grant);
     res.status(201).end();
   } catch (e) {
     logger.info(`Error occured while registering user ${req.body.id}: ${e}`);

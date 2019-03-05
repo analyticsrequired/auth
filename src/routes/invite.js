@@ -18,6 +18,7 @@ export default server => {
 export const handler = async (req, res) => {
   const userService = new UserService();
   const { username } = req.params;
+  const { grant } = req.body;
   const { username: inviter } = req.user;
 
   const user = await userService.getByUsername(username);
@@ -32,12 +33,11 @@ export const handler = async (req, res) => {
     {
       id: username,
       permissions: ["invitation"],
-      inviter
+      inviter,
+      grant
     },
     process.env.JWT_SECRET
   );
-
-  debugger;
 
   res
     .status(201)
