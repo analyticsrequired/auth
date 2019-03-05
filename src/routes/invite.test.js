@@ -36,6 +36,9 @@ describe("invite", () => {
       params: {
         username: expectedUsername
       },
+      body: {
+        grant: ["foo", "bar"]
+      },
       user: {
         username: expectedInviterUsername
       }
@@ -56,6 +59,7 @@ describe("invite", () => {
       {
         id: expectedUsername,
         permissions: ["invitation"],
+        grant: ["foo", "bar"],
         inviter: req.user.username
       },
       expectedJwtSecret

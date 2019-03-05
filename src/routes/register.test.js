@@ -56,6 +56,22 @@ describe("register", () => {
     };
   });
 
+  describe("when grant defined", () => {
+    beforeEach(() => {
+      req.user.grant = ["granted"];
+    });
+
+    it("should call register with", async () => {
+      await handler(req, res);
+
+      expect(registerMock).toBeCalledWith(
+        req.user.id,
+        req.body.password,
+        req.user.grant
+      );
+    });
+  });
+
   it("should return correct response", async () => {
     await handler(req, res);
 
