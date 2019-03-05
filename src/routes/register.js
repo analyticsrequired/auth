@@ -1,0 +1,46 @@
+import UserService from "../services/user";
+import logger from "../logger";
+import passport from "passport";
+import expressJwtPermissions from "express-jwt-permissions";
+
+export default server => {
+  const guard = expressJwtPermissions();
+  const userService = new UserService();
+
+  server.post(
+    "/register",
+    passport.authenticate("jwt", { session: false }),
+    guard.check(["invitation"]),
+    async (req, res) => {
+      try {
+        const { id, inviter } = req.user;
+        const { password } = req.body;
+
+        logger.info(`Registration from invite: ${id} invited by ${inviter}`);
+
+        if (!id || !password) {
+          res.status(400).json({ error: "Username and password required" });
+          return;
+        }
+
+        const user = await userService.getByUsername(id);
+
+        if (user) {
+          logger.info(`Duplicated user registration: ${id}`);
+          res.status(400).json({ error: "User already exists" });
+          return;
+        }
+
+        await userService.register(id, password);
+        res.status(201).end();
+      } catch (e) {
+        logger.info(
+          `Error occured while registering user ${req.body.id}: ${e}`
+        );
+        res.status(500).json({
+          error: "An error occurred during registration. Please resubmit."
+        });
+      }
+    }
+  );
+};

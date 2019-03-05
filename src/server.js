@@ -3,14 +3,18 @@ import express from "express";
 import expressWinston from "express-winston";
 import passport from "passport";
 import passportJWT from "passport-jwt";
-import root from "./routes/root";
-import auth from "./routes/auth";
-import logger from "./logger";
 import UserService from "./services/user";
+import logger from "./logger";
+import root from "./routes/root";
+import register from "./routes/register";
+import token from "./routes/token";
+import invite from "./routes/invite";
 
 assert(process.env.JWT_SECRET, "Environment variable JWT_SECRET not set");
 
 const server = express();
+
+// Body
 
 server.use(express.json());
 server.use(
@@ -18,6 +22,8 @@ server.use(
     extended: true
   })
 );
+
+// Logger
 
 server.use(
   expressWinston.logger({
@@ -57,7 +63,11 @@ server.use(passport.initialize());
 // Routes
 
 root(server);
-auth(server);
+invite(server);
+register(server);
+token(server);
+
+// Error Handling
 
 server.use(function(err, req, res, next) {
   if (err.code === "permission_denied") {
