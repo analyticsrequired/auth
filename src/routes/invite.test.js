@@ -86,4 +86,24 @@ describe("invite", () => {
       expect(res.json).toBeCalledWith({ error: "User already exists" });
     });
   });
+
+  describe("when no grant is passed", () => {
+    beforeEach(() => {
+      delete req.body.grant;
+    });
+
+    it("should create correct jwt payload", async () => {
+      await handler(req, res);
+
+      expect(jwt.sign).toBeCalledWith(
+        {
+          id: expectedUsername,
+          permissions: ["invitation"],
+          grant: [],
+          inviter: req.user.username
+        },
+        expectedJwtSecret
+      );
+    });
+  });
 });

@@ -18,7 +18,7 @@ export default server => {
 export const handler = async (req, res) => {
   const userService = new UserService();
   const { username } = req.params;
-  const { grant } = req.body;
+  const { grant = [] } = req.body;
   const { username: inviter } = req.user;
 
   const user = await userService.getByUsername(username);
