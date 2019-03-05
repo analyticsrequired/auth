@@ -43,6 +43,16 @@ Generates invitation JWT for username.
 
 - admin
 
+#### Example Body
+
+Passing `grant` in the body will grant those permissions to the user on registration.
+
+```json
+{
+  "grant": ["permissions", "to", "grant", "user"]
+}
+```
+
 #### Returns
 
 | Status      | Body       | Content-Type |
@@ -56,6 +66,7 @@ Generates invitation JWT for username.
   "id": "username",
   "permissions": ["invitation"],
   "inviter": "invitersUsername",
+  "grant": ["permissions", "to", "grant", "user"],
   "iat": 0000000000
 }
 ```
