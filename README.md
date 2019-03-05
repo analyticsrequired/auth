@@ -9,13 +9,29 @@ An authentication service that serves JWTs.
 - Clone this repository
 - `$ npm run install`
 
-### Running Development Server
+### Running
 
-- `$ npm run start:dev`
+- `$ npm run start`
 
 ### JWT_SECRET
 
 JWTs generated are signed by the `JWT_SECRET` environment variable which must be set before starting server.
+
+## Development
+
+See [development wiki](https://github.com/analyticsrequired/auth/wiki/Development).
+
+### Scripts
+
+- `build`: Builds to `dist/index.js`
+- `start`: Start server without building
+- `start:cold`: Start build then start server
+- `start:dev`: Runs `start:cold` on code changes
+- `test`: Runs all tests
+- `preview`: Shows the files that will be bundled with `publish`
+- `knex`: The knex cli
+- `knex:latest`: Run migrations to latest
+- `knex:reset`: Delete database and rerun migrations to latest
 
 ## Endpoints
 
@@ -102,15 +118,3 @@ Returns JWT if authentication succeeds.
   "iat": 0000000000
 }
 ```
-
-## Scripts
-
-- `build`: Builds to `dist/index.js`
-- `start`: Start server without building
-- `start:cold`: Start build then start server
-- `start:dev`: Runs `start:cold` on code changes
-- `test`: Runs all tests
-- `preview`: Shows the files that will be bundled with `publish`
-- `knex`: The knex cli
-- `knex:latest`: Run migrations to latest
-- `knex:reset`: Delete database and rerun migrations to latest
