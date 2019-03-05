@@ -40,6 +40,10 @@ export const handler = async (req, res) => {
 
     res.status(401).json({ error: "Invalid username or password" });
   } catch (e) {
-    res.json({ message: e });
+    res
+      .status(500)
+      .json({
+        error: "An error occurred during registration. Please resubmit."
+      });
   }
 };
