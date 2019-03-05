@@ -1,5 +1,7 @@
 export default server => {
-  server.get(`/`, (_, res) => {
-    res.send("Analytics Required Auth Service");
-  });
+  server.get(`/`, handler);
+};
+
+export const handler = (_, res) => {
+  res.send("Analytics Required Auth Service");
 };

@@ -37,6 +37,8 @@ export const handler = async (req, res) => {
     process.env.JWT_SECRET
   );
 
+  debugger;
+
   res
     .status(201)
     .set("Content-Type", "plain/text")
