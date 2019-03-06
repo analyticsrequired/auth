@@ -3,19 +3,27 @@ import db from "../db";
 const tableName = "users";
 
 export default class UserService {
-  async getByUsername(username) {
+  async getById(id) {
     const user = await db(tableName)
       .first()
-      .where({ username });
+      .where({ username: id });
 
     if (user) {
       user.permissions = user.scope.split(" ");
+      delete user.scope;
     }
+
+    user.id = id;
+    delete user.username;
 
     return user;
   }
 
-  register(username, password, grant = []) {
-    return db(tableName).insert({ username, password, scope: grant.join(" ") });
+  register(id, password, grant = []) {
+    return db(tableName).insert({
+      username: id,
+      password,
+      scope: grant.join(" ")
+    });
   }
 }

@@ -8,7 +8,7 @@ export default server => {
   const guard = expressJwtPermissions();
 
   server.post(
-    "/invite/:username",
+    "/invite/:userId",
     passport.authenticate("jwt", { session: false }),
     guard.check(["admin"]),
     handler
@@ -17,21 +17,21 @@ export default server => {
 
 export const handler = async (req, res) => {
   const userService = new UserService();
-  const { username } = req.params;
+  const { userId } = req.params;
   const { grant = [] } = req.body;
-  const { username: inviter } = req.user;
+  const { id: inviter } = req.user;
 
-  const user = await userService.getByUsername(username);
+  const user = await userService.getById(userId);
 
   if (user) {
-    logger.info(`Duplicated user registration: ${username}`);
+    logger.info(`Duplicated user registration: ${userId}`);
     res.status(400).json({ error: "User already exists" });
     return;
   }
 
   const token = jwt.sign(
     {
-      id: username,
+      id: userId,
       permissions: ["invitation"],
       inviter,
       grant

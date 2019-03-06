@@ -9,28 +9,28 @@ jest.mock("jsonwebtoken");
 describe("token", () => {
   const expectedUsername = "test username";
   const expectedPassword = "test password";
-  const expectedScope = "test scope";
+  const expectedPermissions = ["test", "scope"];
   const expectedJwtSecret = "expected jwt secret";
   const expectedToken = "expected token";
   const expectedUser = {
-    username: expectedUsername,
+    id: expectedUsername,
     password: expectedPassword,
-    scope: expectedScope
+    permissions: expectedPermissions
   };
 
   let req;
   let res;
-  let getByUsernameMock;
+  let getByIdMock;
 
   beforeEach(() => {
     process.env.JWT_SECRET = expectedJwtSecret;
 
     UserService.mockClear();
-    getByUsernameMock = jest.fn();
-    getByUsernameMock.mockResolvedValue(expectedUser);
+    getByIdMock = jest.fn();
+    getByIdMock.mockResolvedValue(expectedUser);
     UserService.mockImplementation(() => {
       return {
-        getByUsername: getByUsernameMock
+        getById: getByIdMock
       };
     });
 
@@ -44,8 +44,8 @@ describe("token", () => {
     };
 
     res = {
-      send: jest.fn(() => res),
       status: jest.fn(() => res),
+      send: jest.fn(() => res),
       json: jest.fn(() => res),
       set: jest.fn(() => res)
     };
@@ -57,7 +57,7 @@ describe("token", () => {
     expect(jwt.sign).toBeCalledWith(
       {
         id: expectedUsername,
-        permissions: ["test", "scope"]
+        permissions: expectedPermissions
       },
       expectedJwtSecret
     );
@@ -88,7 +88,7 @@ describe("token", () => {
 
   describe("when user isn't found", () => {
     beforeEach(() => {
-      getByUsernameMock.mockResolvedValue(false);
+      getByIdMock.mockResolvedValue(false);
     });
 
     it("should return error to user", async () => {
@@ -103,7 +103,7 @@ describe("token", () => {
 
   describe("when error is thrown", () => {
     beforeEach(() => {
-      getByUsernameMock.mockImplementation(() => {
+      getByIdMock.mockImplementation(() => {
         throw new Error();
       });
     });

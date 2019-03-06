@@ -7,26 +7,26 @@ jest.mock("../logger");
 jest.mock("jsonwebtoken");
 
 describe("invite", () => {
-  const expectedUsername = "test username";
-  const expectedInviterUsername = "test inviter username";
+  const expectedUserId = "expected user id";
+  const expectedInviterId = "expected inviter id";
   const expectedJwtSecret = "expected jwt secret";
   const expectedToken = "expected token";
 
   let req;
   let res;
-  let getByUsernameMock;
+  let getByIdMock;
 
   beforeEach(() => {
     process.env.JWT_SECRET = expectedJwtSecret;
 
     UserService.mockClear();
 
-    getByUsernameMock = jest.fn();
-    getByUsernameMock.mockResolvedValue(false);
+    getByIdMock = jest.fn();
+    getByIdMock.mockResolvedValue(false);
 
     UserService.mockImplementation(() => {
       return {
-        getByUsername: getByUsernameMock
+        getById: getByIdMock
       };
     });
 
@@ -34,13 +34,13 @@ describe("invite", () => {
 
     req = {
       params: {
-        username: expectedUsername
+        userId: expectedUserId
       },
       body: {
         grant: ["foo", "bar"]
       },
       user: {
-        username: expectedInviterUsername
+        id: expectedInviterId
       }
     };
 
@@ -57,10 +57,10 @@ describe("invite", () => {
 
     expect(jwt.sign).toBeCalledWith(
       {
-        id: expectedUsername,
+        id: expectedUserId,
         permissions: ["invitation"],
         grant: ["foo", "bar"],
-        inviter: req.user.username
+        inviter: expectedInviterId
       },
       expectedJwtSecret
     );
@@ -76,7 +76,7 @@ describe("invite", () => {
 
   describe("when user already registered", () => {
     beforeEach(() => {
-      getByUsernameMock.mockResolvedValue(true);
+      getByIdMock.mockResolvedValue(true);
     });
 
     it("should return error to user", async () => {
@@ -97,10 +97,10 @@ describe("invite", () => {
 
       expect(jwt.sign).toBeCalledWith(
         {
-          id: expectedUsername,
+          id: expectedUserId,
           permissions: ["invitation"],
           grant: [],
-          inviter: req.user.username
+          inviter: expectedInviterId
         },
         expectedJwtSecret
       );

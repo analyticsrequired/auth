@@ -28,7 +28,7 @@ export const handler = async (req, res) => {
       return;
     }
 
-    const user = await userService.getByUsername(id);
+    const user = await userService.getById(id);
 
     if (user) {
       logger.info(`Duplicated user registration: ${id}`);
@@ -39,6 +39,7 @@ export const handler = async (req, res) => {
     await userService.register(id, password, grant);
     res.status(201).end();
   } catch (e) {
+    debugger;
     logger.info(`Error occured while registering user ${req.body.id}: ${e}`);
     res.status(500).json({
       error: "An error occurred during registration. Please resubmit."

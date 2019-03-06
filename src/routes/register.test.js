@@ -7,15 +7,15 @@ jest.mock("../logger");
 jest.mock("jsonwebtoken");
 
 describe("register", () => {
-  const expectedUsername = "test username";
-  const expectedInviterUsername = "test inviter username";
+  const expectedUserId = "test username";
+  const expectedInviterId = "test inviter username";
   const expectedPassword = "expected password";
   const expectedJwtSecret = "expected jwt secret";
   const expectedToken = "expected token";
 
   let req;
   let res;
-  let getByUsernameMock;
+  let getByIdMock;
   let registerMock;
 
   beforeEach(() => {
@@ -23,14 +23,14 @@ describe("register", () => {
 
     UserService.mockClear();
 
-    getByUsernameMock = jest.fn();
-    getByUsernameMock.mockResolvedValue(false);
+    getByIdMock = jest.fn();
+    getByIdMock.mockResolvedValue(false);
 
     registerMock = jest.fn();
 
     UserService.mockImplementation(() => {
       return {
-        getByUsername: getByUsernameMock,
+        getById: getByIdMock,
         register: registerMock
       };
     });
@@ -42,14 +42,14 @@ describe("register", () => {
         password: expectedPassword
       },
       user: {
-        id: expectedUsername,
-        inviter: expectedInviterUsername
+        id: expectedUserId,
+        inviter: expectedInviterId
       }
     };
 
     res = {
-      send: jest.fn(() => res),
       status: jest.fn(() => res),
+      send: jest.fn(() => res),
       json: jest.fn(() => res),
       set: jest.fn(() => res),
       end: jest.fn(() => res)
@@ -65,8 +65,8 @@ describe("register", () => {
       await handler(req, res);
 
       expect(registerMock).toBeCalledWith(
-        req.user.id,
-        req.body.password,
+        expectedUserId,
+        expectedPassword,
         req.user.grant
       );
     });
@@ -74,6 +74,8 @@ describe("register", () => {
 
   it("should return correct response", async () => {
     await handler(req, res);
+
+    debugger;
 
     expect(res.status).toBeCalledWith(201);
   });
@@ -110,7 +112,7 @@ describe("register", () => {
 
   describe("when user already registered", () => {
     beforeEach(() => {
-      getByUsernameMock.mockResolvedValue(true);
+      getByIdMock.mockResolvedValue(true);
     });
 
     it("should return error to user", async () => {
