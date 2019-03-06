@@ -3,6 +3,7 @@ import express from "express";
 import expressWinston from "express-winston";
 import passport from "passport";
 import passportJWT from "passport-jwt";
+import cors from "cors";
 import UserService from "./services/user";
 import logger from "./logger";
 import root from "./routes/root";
@@ -13,6 +14,8 @@ import invite from "./routes/invite";
 assert(process.env.JWT_SECRET, "Environment variable JWT_SECRET not set");
 
 const server = express();
+
+server.use(cors());
 
 // Body
 
