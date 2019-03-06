@@ -75,8 +75,6 @@ describe("register", () => {
   it("should return correct response", async () => {
     await handler(req, res);
 
-    debugger;
-
     expect(res.status).toBeCalledWith(201);
   });
 
