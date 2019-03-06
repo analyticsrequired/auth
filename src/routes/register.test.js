@@ -7,8 +7,8 @@ jest.mock("../logger");
 jest.mock("jsonwebtoken");
 
 describe("register", () => {
-  const expectedUserId = "test username";
-  const expectedInviterId = "test inviter username";
+  const expectedUserId = "test id";
+  const expectedInviterId = "test inviter id";
   const expectedPassword = "expected password";
   const expectedJwtSecret = "expected jwt secret";
   const expectedToken = "expected token";
@@ -80,7 +80,7 @@ describe("register", () => {
     expect(res.status).toBeCalledWith(201);
   });
 
-  describe("when username is missing", () => {
+  describe("when id is missing", () => {
     beforeEach(() => {
       delete req.user.id;
     });
@@ -90,7 +90,7 @@ describe("register", () => {
 
       expect(res.status).toBeCalledWith(400);
       expect(res.json).toBeCalledWith({
-        error: "Username and password required"
+        error: "Id and password required"
       });
     });
   });
@@ -105,7 +105,7 @@ describe("register", () => {
 
       expect(res.status).toBeCalledWith(400);
       expect(res.json).toBeCalledWith({
-        error: "Username and password required"
+        error: "Id and password required"
       });
     });
   });

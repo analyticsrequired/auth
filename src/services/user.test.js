@@ -4,7 +4,7 @@ import db from "../db";
 jest.mock("../db");
 
 describe("UserService", () => {
-  const expectedUsername = "expected username";
+  const expectedUserId = "expected id";
   const expectedPassword = "expected password";
 
   let userService;
@@ -23,13 +23,13 @@ describe("UserService", () => {
   });
 
   it("should call insert correctly", async () => {
-    await userService.register(expectedUsername, expectedPassword, [
+    await userService.register(expectedUserId, expectedPassword, [
       "foo",
       "bar"
     ]);
 
     expect(insertMock).toBeCalledWith({
-      username: expectedUsername,
+      username: expectedUserId,
       password: expectedPassword,
       scope: "foo bar"
     });
@@ -37,10 +37,10 @@ describe("UserService", () => {
 
   describe("when no grant is set", () => {
     it("should not set scope", async () => {
-      await userService.register(expectedUsername, expectedPassword);
+      await userService.register(expectedUserId, expectedPassword);
 
       expect(insertMock).toBeCalledWith({
-        username: expectedUsername,
+        username: expectedUserId,
         password: expectedPassword,
         scope: ""
       });

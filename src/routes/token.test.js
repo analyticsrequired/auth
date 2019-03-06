@@ -7,13 +7,13 @@ jest.mock("../logger");
 jest.mock("jsonwebtoken");
 
 describe("token", () => {
-  const expectedUsername = "test username";
+  const expectedUserId = "test id";
   const expectedPassword = "test password";
   const expectedPermissions = ["test", "scope"];
   const expectedJwtSecret = "expected jwt secret";
   const expectedToken = "expected token";
   const expectedUser = {
-    id: expectedUsername,
+    id: expectedUserId,
     password: expectedPassword,
     permissions: expectedPermissions
   };
@@ -38,7 +38,7 @@ describe("token", () => {
 
     req = {
       body: {
-        id: expectedUsername,
+        id: expectedUserId,
         password: expectedPassword
       }
     };
@@ -56,7 +56,7 @@ describe("token", () => {
 
     expect(jwt.sign).toBeCalledWith(
       {
-        id: expectedUsername,
+        id: expectedUserId,
         permissions: expectedPermissions
       },
       expectedJwtSecret
@@ -81,7 +81,7 @@ describe("token", () => {
 
       expect(res.status).toBeCalledWith(401);
       expect(res.json).toBeCalledWith({
-        error: "Invalid username or password"
+        error: "Invalid id or password"
       });
     });
   });
@@ -96,7 +96,7 @@ describe("token", () => {
 
       expect(res.status).toBeCalledWith(401);
       expect(res.json).toBeCalledWith({
-        error: "Invalid username or password"
+        error: "Invalid id or password"
       });
     });
   });

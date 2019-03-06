@@ -11,10 +11,10 @@ export default class UserService {
     if (user) {
       user.permissions = user.scope.split(" ");
       delete user.scope;
-    }
 
-    user.id = id;
-    delete user.username;
+      user.id = id;
+      delete user.username;
+    }
 
     return user;
   }

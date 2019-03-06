@@ -35,9 +35,9 @@ See [development wiki](https://github.com/analyticsrequired/auth/wiki/Developmen
 
 ## Endpoints
 
-### POST /invite/:username
+### POST /invite/:id
 
-Generates invitation JWT for username.
+Generates invitation JWT for id.
 
 ### Permissions Required
 
@@ -63,9 +63,9 @@ Passing `grant` in the body will grant those permissions to the user on registra
 
 ```json
 {
-  "id": "username",
+  "id": "userId",
   "permissions": ["invitation"],
-  "inviter": "invitersUsername",
+  "inviter": "invitersId",
   "grant": ["permissions", "to", "grant", "user"],
   "iat": 0000000000
 }
@@ -109,7 +109,7 @@ Returns JWT if authentication succeeds.
 
 ```json
 {
-  "id": "username",
+  "id": "userId",
   "password": "password"
 }
 ```
@@ -124,7 +124,7 @@ Returns JWT if authentication succeeds.
 
 ```json
 {
-  "id": "username",
+  "id": "userId",
   "permissions": ["... users permissions"],
   "iat": 0000000000
 }

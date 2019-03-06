@@ -14,12 +14,12 @@ export const handler = async (req, res) => {
 
     if (!user) {
       logger.info(`User ${req.body.id} requested token but wasn't found`);
-      res.status(401).json({ error: "Invalid username or password" });
+      res.status(401).json({ error: "Invalid id or password" });
       return;
     }
 
     if (user.password === req.body.password) {
-      logger.info(`User ${user.username} is authenticated.`);
+      logger.info(`User ${user.id} is authenticated.`);
 
       const token = jwt.sign(
         { id: user.id, permissions: user.permissions },
@@ -34,9 +34,9 @@ export const handler = async (req, res) => {
       return;
     }
 
-    logger.info(`User ${user.username} was is not able to be authenticated.`);
+    logger.info(`User ${user.id} was is not able to be authenticated.`);
 
-    res.status(401).json({ error: "Invalid username or password" });
+    res.status(401).json({ error: "Invalid id or password" });
   } catch (e) {
     res.status(500).json({
       error: "An error occurred during registration. Please resubmit."

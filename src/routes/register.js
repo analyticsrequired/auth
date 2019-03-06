@@ -24,7 +24,7 @@ export const handler = async (req, res) => {
     logger.info(`Registration from invite: ${id} invited by ${inviter}`);
 
     if (!id || !password) {
-      res.status(400).json({ error: "Username and password required" });
+      res.status(400).json({ error: "Id and password required" });
       return;
     }
 
