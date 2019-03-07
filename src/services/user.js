@@ -9,7 +9,7 @@ export default class UserService {
       .where({ username: id });
 
     if (user) {
-      user.permissions = user.scope.split(" ");
+      user.permissions = user.scope.length === 0 ? [] : user.scope.split(" ");
       delete user.scope;
 
       user.id = id;
@@ -23,7 +23,7 @@ export default class UserService {
     return db(tableName).insert({
       username: id,
       password,
-      scope: grant.join(" ")
+      scope: grant.length ? grant.join(" ") : ""
     });
   }
 }

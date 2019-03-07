@@ -19,7 +19,11 @@ export const handler = async (req, res) => {
     }
 
     if (user.password === req.body.password) {
-      logger.info(`User ${user.id} is authenticated.`);
+      logger.info(
+        `User ${user.id} is authenticated with permissions: ${JSON.stringify(
+          user.permissions
+        )}`
+      );
 
       const token = jwt.sign(
         { id: user.id, permissions: user.permissions },
