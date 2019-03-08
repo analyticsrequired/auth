@@ -58,9 +58,9 @@ describe("UserService", () => {
       expect(user.scope).toBeUndefined();
     });
 
-    it("should map id", async () => {
+    it("should map sub", async () => {
       const user = await userService.getById(expectedUserId);
-      expect(user.id).toEqual(expectedUserId);
+      expect(user.sub).toEqual(expectedUserId);
     });
 
     it("should remove username", async () => {

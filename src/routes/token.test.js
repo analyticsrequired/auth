@@ -56,7 +56,7 @@ describe("token", () => {
 
     expect(jwt.sign).toBeCalledWith(
       {
-        id: expectedUserId,
+        sub: expectedUserId,
         permissions: expectedPermissions
       },
       expectedJwtSecret,

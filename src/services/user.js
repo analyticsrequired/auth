@@ -12,7 +12,7 @@ export default class UserService {
       user.permissions = user.scope.length === 0 ? [] : user.scope.split(" ");
       delete user.scope;
 
-      user.id = id;
+      user.sub = user.username;
       delete user.username;
     }
 

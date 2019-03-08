@@ -53,7 +53,7 @@ passport.use(
         user = payload;
       } else {
         const userService = new UserService();
-        user = await userService.getById(payload.id);
+        user = await userService.getById(payload.sub);
       }
 
       user ? next(null, user) : next(null, false);

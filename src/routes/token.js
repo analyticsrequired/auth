@@ -26,7 +26,7 @@ export const handler = async (req, res) => {
       );
 
       const token = jwt.sign(
-        { id: user.id, permissions: user.permissions },
+        { sub: user.sub, permissions: user.permissions },
         process.env.JWT_SECRET,
         {
           expiresIn: "24h"
