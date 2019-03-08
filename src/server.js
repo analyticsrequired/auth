@@ -49,7 +49,7 @@ passport.use(
     async (payload, next) => {
       let user;
 
-      if (payload.permissions.includes("invitation")) {
+      if (payload.invitation) {
         user = payload;
       } else {
         const userService = new UserService();

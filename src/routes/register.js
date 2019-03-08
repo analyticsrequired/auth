@@ -43,7 +43,7 @@ export const handler = async (req, res) => {
     await userService.register(sub, password, grant);
     res.status(201).end();
   } catch (e) {
-    logger.info(`Error occured while registering user ${req.body.id}: ${e}`);
+    logger.info(`Error occured while registering user ${sub}: ${e}`);
     res.status(500).json({
       error: "An error occurred during registration. Please resubmit."
     });
