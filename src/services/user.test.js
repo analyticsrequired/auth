@@ -8,21 +8,30 @@ describe("UserService", () => {
   const expectedPassword = "expected password";
 
   let userService;
+  let instanceMock;
   let insertMock;
   let firstMock;
   let whereMock;
+  let expectedUser;
 
   beforeEach(() => {
-    insertMock = jest.fn(() => db);
-    firstMock = jest.fn(() => db);
-    whereMock = jest.fn(() => db);
+    expectedUser = {
+      scope: "foo bar",
+      username: expectedUserId
+    };
+
+    insertMock = jest.fn(() => instanceMock);
+    firstMock = jest.fn(() => instanceMock);
+    whereMock = jest.fn().mockResolvedValue(expectedUser);
+
+    instanceMock = {
+      insert: insertMock,
+      first: firstMock,
+      where: whereMock
+    };
 
     db.mockImplementation(() => {
-      return {
-        insert: insertMock,
-        first: firstMock,
-        where: whereMock
-      };
+      return instanceMock;
     });
 
     userService = new UserService();
@@ -37,6 +46,26 @@ describe("UserService", () => {
     it.skip("should call where with correct params", async () => {
       await userService.getById(expectedUserId);
       expect(whereMock).toBeCalledWith({ username: expectedUserId });
+    });
+
+    it("should map permissions", async () => {
+      const user = await userService.getById(expectedUserId);
+      expect(user.permissions).toEqual(["foo", "bar"]);
+    });
+
+    it("should remove scope", async () => {
+      const user = await userService.getById(expectedUserId);
+      expect(user.scope).toBeUndefined();
+    });
+
+    it("should map id", async () => {
+      const user = await userService.getById(expectedUserId);
+      expect(user.id).toEqual(expectedUserId);
+    });
+
+    it("should remove username", async () => {
+      const user = await userService.getById(expectedUserId);
+      expect(user.username).toBeUndefined();
     });
   });
 
