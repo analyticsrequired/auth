@@ -13,7 +13,7 @@ describe("token", () => {
   const expectedJwtSecret = "expected jwt secret";
   const expectedToken = "expected token";
   const expectedUser = {
-    id: expectedUserId,
+    sub: expectedUserId,
     password: expectedPassword,
     permissions: expectedPermissions
   };
