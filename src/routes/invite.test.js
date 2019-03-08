@@ -40,7 +40,7 @@ describe("invite", () => {
         grant: ["foo", "bar"]
       },
       user: {
-        id: expectedInviterId
+        sub: expectedInviterId
       }
     };
 

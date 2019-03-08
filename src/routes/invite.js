@@ -19,7 +19,7 @@ export const handler = async (req, res) => {
   const userService = new UserService();
   const { userId } = req.params;
   const { grant = [] } = req.body;
-  const { id: inviter } = req.user;
+  const { sub: inviter } = req.user;
 
   const user = await userService.getById(userId);
 
