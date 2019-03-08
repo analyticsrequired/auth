@@ -36,7 +36,10 @@ export const handler = async (req, res) => {
       inviter,
       grant
     },
-    process.env.JWT_SECRET
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1h"
+    }
   );
 
   res

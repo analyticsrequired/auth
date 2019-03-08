@@ -59,7 +59,10 @@ describe("token", () => {
         id: expectedUserId,
         permissions: expectedPermissions
       },
-      expectedJwtSecret
+      expectedJwtSecret,
+      {
+        expiresIn: "24h"
+      }
     );
   });
 

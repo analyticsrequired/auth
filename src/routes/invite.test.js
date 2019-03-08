@@ -62,7 +62,10 @@ describe("invite", () => {
         grant: ["foo", "bar"],
         inviter: expectedInviterId
       },
-      expectedJwtSecret
+      expectedJwtSecret,
+      {
+        expiresIn: "1h"
+      }
     );
   });
 
@@ -102,7 +105,10 @@ describe("invite", () => {
           grant: [],
           inviter: expectedInviterId
         },
-        expectedJwtSecret
+        expectedJwtSecret,
+        {
+          expiresIn: "1h"
+        }
       );
     });
   });
