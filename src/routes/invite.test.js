@@ -58,9 +58,11 @@ describe("invite", () => {
     expect(jwt.sign).toBeCalledWith(
       {
         sub: expectedUserId,
-        permissions: ["invitation"],
-        grant: ["foo", "bar"],
-        inviter: expectedInviterId
+        permissions: [],
+        invitation: {
+          grant: ["foo", "bar"],
+          inviter: expectedInviterId
+        }
       },
       expectedJwtSecret,
       {
@@ -101,9 +103,11 @@ describe("invite", () => {
       expect(jwt.sign).toBeCalledWith(
         {
           sub: expectedUserId,
-          permissions: ["invitation"],
-          grant: [],
-          inviter: expectedInviterId
+          permissions: [],
+          invitation: {
+            grant: [],
+            inviter: expectedInviterId
+          }
         },
         expectedJwtSecret,
         {

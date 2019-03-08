@@ -42,8 +42,12 @@ describe("register", () => {
         password: expectedPassword
       },
       user: {
-        id: expectedUserId,
-        inviter: expectedInviterId
+        sub: expectedUserId,
+        permissions: [],
+        invitation: {
+          grant: [],
+          inviter: expectedInviterId
+        }
       }
     };
 
@@ -56,9 +60,21 @@ describe("register", () => {
     };
   });
 
+  describe("when invitation not defined", () => {
+    beforeEach(() => {
+      delete req.user.invitation;
+    });
+
+    it("should return a 401", async () => {
+      await handler(req, res);
+
+      expect(res.status).toBeCalledWith(401);
+    });
+  });
+
   describe("when grant defined", () => {
     beforeEach(() => {
-      req.user.grant = ["granted"];
+      req.user.invitation.grant = ["granted"];
     });
 
     it("should call register with", async () => {
@@ -67,7 +83,7 @@ describe("register", () => {
       expect(registerMock).toBeCalledWith(
         expectedUserId,
         expectedPassword,
-        req.user.grant
+        req.user.invitation.grant
       );
     });
   });
@@ -80,7 +96,7 @@ describe("register", () => {
 
   describe("when id is missing", () => {
     beforeEach(() => {
-      delete req.user.id;
+      delete req.user.sub;
     });
 
     it("should return validation error to user", async () => {

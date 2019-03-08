@@ -32,9 +32,11 @@ export const handler = async (req, res) => {
   const token = jwt.sign(
     {
       sub: userId,
-      permissions: ["invitation"],
-      inviter,
-      grant
+      permissions: [],
+      invitation: {
+        grant,
+        inviter
+      }
     },
     process.env.JWT_SECRET,
     {
