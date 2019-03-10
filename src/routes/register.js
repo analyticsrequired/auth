@@ -13,10 +13,10 @@ export default server => {
 export const handler = async (req, res) => {
   const userService = new UserService();
 
-  try {
-    const { sub, invitation } = req.user;
-    const { password } = req.body;
+  const { sub, invitation } = req.user;
+  const { password } = req.body;
 
+  try {
     if (!invitation) {
       logger.info(`Unauthorized invitation: ${JSON.stringify(req.user)}`);
       res.status(401).end();
