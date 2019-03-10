@@ -46,7 +46,7 @@ export const handler = async (req, res) => {
     res.status(401).json({ error: "Invalid id or password" });
   } catch (e) {
     res.status(500).json({
-      error: "An error occurred during registration. Please resubmit."
+      error: "An error occurred during authentication. Please resubmit."
     });
   }
 };

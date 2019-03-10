@@ -116,7 +116,7 @@ describe("token", () => {
 
       expect(res.status).toBeCalledWith(500);
       expect(res.json).toBeCalledWith({
-        error: "An error occurred during registration. Please resubmit."
+        error: "An error occurred during authentication. Please resubmit."
       });
     });
   });
