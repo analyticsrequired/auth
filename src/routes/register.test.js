@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import UserService from "../services/user";
 import { handler } from "./register";
-import { mockResponse } from "../setupJest";
+import { mockResponse, mockUserService } from "../setupJest";
 
 jest.mock("../services/user");
 jest.mock("../logger");
@@ -15,25 +15,14 @@ describe("register", () => {
 
   let req;
   let res;
-  let getByIdMock;
-  let registerMock;
+  let userServiceMock;
 
   beforeEach(() => {
     process.env.JWT_SECRET = expectedJwtSecret;
 
     UserService.mockClear();
-
-    getByIdMock = jest.fn();
-    getByIdMock.mockResolvedValue(false);
-
-    registerMock = jest.fn();
-
-    UserService.mockImplementation(() => {
-      return {
-        getById: getByIdMock,
-        register: registerMock
-      };
-    });
+    userServiceMock = mockUserService(UserService);
+    userServiceMock.getById.mockResolvedValue(false);
 
     jwt.sign.mockReturnValue(expectedToken);
 
@@ -85,7 +74,7 @@ describe("register", () => {
 
   describe("when user already registered", () => {
     beforeEach(() => {
-      getByIdMock.mockResolvedValue(true);
+      userServiceMock.getById.mockResolvedValue(true);
     });
 
     it("should return error to user", async () => {
@@ -98,7 +87,7 @@ describe("register", () => {
 
   describe("when error is thrown", () => {
     it("should return server error to user", async () => {
-      registerMock.mockImplementation(() => {
+      userServiceMock.getById.mockImplementation(() => {
         throw new Error();
       });
 

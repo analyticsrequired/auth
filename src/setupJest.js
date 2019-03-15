@@ -11,3 +11,14 @@ export const mockResponse = () => {
 
   return response;
 };
+
+export const mockUserService = UserServiceClass => {
+  const mockImplementation = {
+    getById: jest.fn(),
+    register: jest.fn()
+  };
+
+  UserServiceClass.mockImplementation(() => mockImplementation);
+
+  return mockImplementation;
+};

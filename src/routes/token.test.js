@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import UserService from "../services/user";
 import { handler } from "./token";
-import { mockResponse } from "../setupJest";
+import { mockResponse, mockUserService } from "../setupJest";
 
 jest.mock("../services/user");
 jest.mock("../logger");
@@ -21,19 +21,14 @@ describe("token", () => {
 
   let req;
   let res;
-  let getByIdMock;
+  let userServiceMock;
 
   beforeEach(() => {
     process.env.JWT_SECRET = expectedJwtSecret;
 
     UserService.mockClear();
-    getByIdMock = jest.fn();
-    getByIdMock.mockResolvedValue(expectedUser);
-    UserService.mockImplementation(() => {
-      return {
-        getById: getByIdMock
-      };
-    });
+    userServiceMock = mockUserService(UserService);
+    userServiceMock.getById.mockResolvedValue(expectedUser);
 
     jwt.sign.mockReturnValue(expectedToken);
 
@@ -87,7 +82,7 @@ describe("token", () => {
 
   describe("when user isn't found", () => {
     beforeEach(() => {
-      getByIdMock.mockResolvedValue(false);
+      userServiceMock.getById.mockResolvedValue(false);
     });
 
     it("should return error to user", async () => {
@@ -102,7 +97,7 @@ describe("token", () => {
 
   describe("when error is thrown", () => {
     beforeEach(() => {
-      getByIdMock.mockImplementation(() => {
+      userServiceMock.getById.mockImplementation(() => {
         throw new Error();
       });
     });
