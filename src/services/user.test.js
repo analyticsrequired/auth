@@ -17,7 +17,7 @@ describe("UserService", () => {
   beforeEach(() => {
     expectedUser = {
       scope: "foo bar",
-      username: expectedUserId
+      userId: expectedUserId
     };
 
     insertMock = jest.fn(() => instanceMock);
@@ -38,9 +38,9 @@ describe("UserService", () => {
   });
 
   describe("getById", () => {
-    it("should return first found", async () => {
-      await userService.getById(expectedUserId);
-      expect(firstMock).toBeCalled();
+    it("should return user", async () => {
+      const user = await userService.getById(expectedUserId);
+      expect(user).toEqual(expectedUser);
     });
 
     it.skip("should call where with correct params", async () => {
@@ -57,41 +57,15 @@ describe("UserService", () => {
       const user = await userService.getById(expectedUserId);
       expect(user.scope).toBeUndefined();
     });
-
-    it("should map sub", async () => {
-      const user = await userService.getById(expectedUserId);
-      expect(user.sub).toEqual(expectedUserId);
-    });
-
-    it("should remove username", async () => {
-      const user = await userService.getById(expectedUserId);
-      expect(user.username).toBeUndefined();
-    });
   });
 
   describe("register", () => {
     it("should call insert correctly", async () => {
-      await userService.register(expectedUserId, expectedPassword, [
-        "foo",
-        "bar"
-      ]);
+      await userService.register(expectedUserId, expectedPassword);
 
       expect(insertMock).toBeCalledWith({
-        username: expectedUserId,
-        password: expectedPassword,
-        scope: "foo bar"
-      });
-    });
-
-    describe("when no grant is set", () => {
-      it("should not set scope", async () => {
-        await userService.register(expectedUserId, expectedPassword);
-
-        expect(insertMock).toBeCalledWith({
-          username: expectedUserId,
-          password: expectedPassword,
-          scope: ""
-        });
+        userId: expectedUserId,
+        password: expectedPassword
       });
     });
   });
