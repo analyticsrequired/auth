@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import UserService from "../services/user";
 import { handler } from "./token";
+import { mockResponse } from "../setupJest";
 
 jest.mock("../services/user");
 jest.mock("../logger");
@@ -43,12 +44,7 @@ describe("token", () => {
       }
     };
 
-    res = {
-      status: jest.fn(() => res),
-      send: jest.fn(() => res),
-      json: jest.fn(() => res),
-      set: jest.fn(() => res)
-    };
+    res = mockResponse();
   });
 
   it("should create correct jwt payload", async () => {

@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import UserService from "../services/user";
 import { handler } from "./register";
+import { mockResponse } from "../setupJest";
 
 jest.mock("../services/user");
 jest.mock("../logger");
@@ -43,13 +44,7 @@ describe("register", () => {
       }
     };
 
-    res = {
-      status: jest.fn(() => res),
-      send: jest.fn(() => res),
-      json: jest.fn(() => res),
-      set: jest.fn(() => res),
-      end: jest.fn(() => res)
-    };
+    res = mockResponse();
   });
 
   it("should return correct response", async () => {
