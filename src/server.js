@@ -45,20 +45,21 @@ passport.use(
       jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeaderWithScheme("jwt"),
       secretOrKey: process.env.JWT_SECRET
     },
-    async (payload, next) => {
-      let user;
-
-      if (payload.invitation) {
-        user = payload;
-      } else {
-        const userService = new UserService();
-        user = await userService.getById(payload.sub);
-      }
-
-      user ? next(null, user) : next(null, false);
-    }
+    passportJwtStrategy
   )
 );
+
+export async function passportJwtStrategy(payload, next) {
+  const userService = new UserService();
+
+  let user = await userService.getById(payload.sub);
+
+  if (user) {
+    next(null, { ...payload, user });
+  } else {
+    next(null, false);
+  }
+}
 
 server.use(passport.initialize());
 
