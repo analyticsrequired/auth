@@ -1,49 +1,33 @@
 import UserService from "../services/user";
 import logger from "../logger";
-import passport from "passport";
 
 export default server => {
-  server.post(
-    "/register",
-    passport.authenticate("jwt", { session: false }),
-    handler
-  );
+  server.post("/register", handler);
 };
 
 export const handler = async (req, res) => {
   const userService = new UserService();
 
-  const { sub, invitation } = req.user;
-  const { password } = req.body;
+  const { userId, password } = req.body;
 
   try {
-    if (!invitation) {
-      logger.info(`Unauthorized invitation: ${JSON.stringify(req.user)}`);
-      res.status(401).end();
+    if (!userId || !password) {
+      res.status(400).json({ error: "User Id and Password required" });
       return;
     }
 
-    const { inviter, grant } = invitation;
-
-    logger.info(`Registration from invite: ${sub} invited by ${inviter}`);
-
-    if (!sub || !password) {
-      res.status(400).json({ error: "Id and password required" });
-      return;
-    }
-
-    const user = await userService.getById(sub);
+    const user = await userService.getById(userId);
 
     if (user) {
-      logger.info(`Duplicated user registration: ${sub}`);
+      logger.info(`Duplicated user registration: ${userId}`);
       res.status(400).json({ error: "User already exists" });
       return;
     }
 
-    await userService.register(sub, password, grant);
+    await userService.register(userId, password);
     res.status(201).end();
   } catch (e) {
-    logger.info(`Error occured while registering user ${sub}: ${e}`);
+    logger.info(`Error occured while registering user ${userId}: ${e}`);
     res.status(500).json({
       error: "An error occurred during registration. Please resubmit."
     });

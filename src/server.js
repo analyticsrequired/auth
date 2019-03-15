@@ -9,7 +9,6 @@ import logger from "./logger";
 import root from "./routes/root";
 import register from "./routes/register";
 import token from "./routes/token";
-import invite from "./routes/invite";
 
 assert(process.env.JWT_SECRET, "Environment variable JWT_SECRET not set");
 
@@ -66,7 +65,6 @@ server.use(passport.initialize());
 // Routes
 
 root(server);
-invite(server);
 register(server);
 token(server);
 
