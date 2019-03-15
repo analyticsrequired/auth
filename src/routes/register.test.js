@@ -7,11 +7,10 @@ jest.mock("../logger");
 jest.mock("jsonwebtoken");
 
 describe("register", () => {
-  const expectedUserId = "test id";
-  const expectedInviterId = "test inviter id";
+  const expectedUserId = "expected user id";
   const expectedPassword = "expected password";
-  const expectedJwtSecret = "expected jwt secret";
   const expectedToken = "expected token";
+  const expectedJwtSecret = "expected jwt secret";
 
   let req;
   let res;
@@ -39,15 +38,8 @@ describe("register", () => {
 
     req = {
       body: {
+        userId: expectedUserId,
         password: expectedPassword
-      },
-      user: {
-        sub: expectedUserId,
-        permissions: [],
-        invitation: {
-          grant: [],
-          inviter: expectedInviterId
-        }
       }
     };
 
@@ -60,43 +52,15 @@ describe("register", () => {
     };
   });
 
-  describe("when invitation not defined", () => {
-    beforeEach(() => {
-      delete req.user.invitation;
-    });
-
-    it("should return a 401", async () => {
-      await handler(req, res);
-
-      expect(res.status).toBeCalledWith(401);
-    });
-  });
-
-  describe("when grant defined", () => {
-    beforeEach(() => {
-      req.user.invitation.grant = ["granted"];
-    });
-
-    it("should call register with", async () => {
-      await handler(req, res);
-
-      expect(registerMock).toBeCalledWith(
-        expectedUserId,
-        expectedPassword,
-        req.user.invitation.grant
-      );
-    });
-  });
-
   it("should return correct response", async () => {
     await handler(req, res);
 
     expect(res.status).toBeCalledWith(201);
   });
 
-  describe("when id is missing", () => {
+  describe("when user id is missing", () => {
     beforeEach(() => {
-      delete req.user.sub;
+      delete req.body.userId;
     });
 
     it("should return validation error to user", async () => {
@@ -104,7 +68,7 @@ describe("register", () => {
 
       expect(res.status).toBeCalledWith(400);
       expect(res.json).toBeCalledWith({
-        error: "Id and password required"
+        error: "User Id and Password required"
       });
     });
   });
@@ -119,7 +83,7 @@ describe("register", () => {
 
       expect(res.status).toBeCalledWith(400);
       expect(res.json).toBeCalledWith({
-        error: "Id and password required"
+        error: "User Id and Password required"
       });
     });
   });

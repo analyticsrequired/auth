@@ -35,42 +35,6 @@ See [development wiki](https://github.com/analyticsrequired/auth/wiki/Developmen
 
 ## Endpoints
 
-### POST /invite/:id
-
-Generates invitation JWT for id.
-
-### Permissions Required
-
-- admin
-
-#### Example Body
-
-Passing `grant` in the body will grant those permissions to the user on registration.
-
-```json
-{
-  "grant": ["permissions", "to", "grant", "user"]
-}
-```
-
-#### Returns
-
-| Status      | Body       | Content-Type |
-| :---------- | :--------- | :----------- |
-| 201 CREATED | JWT string | text/plain   |
-
-##### JWT Payload
-
-```json
-{
-  "id": "userId",
-  "permissions": ["invitation"],
-  "inviter": "invitersId",
-  "grant": ["permissions", "to", "grant", "user"],
-  "iat": 0000000000
-}
-```
-
 ### POST /register
 
 Register a new user. Required for generating JWTs.
@@ -83,15 +47,8 @@ Register a new user. Required for generating JWTs.
 
 ```json
 {
+  "userId": "userid",
   "password": "password"
-}
-```
-
-#### Example Headers
-
-```json
-{
-  "Authorization": "JWT {TOKEN_FROM_INVITE}"
 }
 ```
 
