@@ -38,7 +38,7 @@ describe("token", () => {
 
     req = {
       body: {
-        id: expectedUserId,
+        userId: expectedUserId,
         password: expectedPassword
       }
     };
@@ -84,7 +84,7 @@ describe("token", () => {
 
       expect(res.status).toBeCalledWith(401);
       expect(res.json).toBeCalledWith({
-        error: "Invalid id or password"
+        error: "Invalid user id or password"
       });
     });
   });
@@ -99,7 +99,7 @@ describe("token", () => {
 
       expect(res.status).toBeCalledWith(401);
       expect(res.json).toBeCalledWith({
-        error: "Invalid id or password"
+        error: "Invalid user id or password"
       });
     });
   });
