@@ -17,6 +17,10 @@ An authentication service that serves JWTs.
 
 JWTs generated are signed by the `JWT_SECRET` environment variable which must be set before starting server.
 
+### JWT_SECRET
+
+Refresh JWTs generated are signed by the `JWT_REFRESH_SECRET` environment variable which must be set before starting server.
+
 ## Development
 
 See [development wiki](https://github.com/analyticsrequired/auth/wiki/Development).
