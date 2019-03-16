@@ -12,6 +12,10 @@ import refresh from "./routes/refresh";
 import passportJwtStrategy from "./passportJwtStrategy";
 
 assert(process.env.JWT_SECRET, "Environment variable JWT_SECRET not set");
+assert(
+  process.env.JWT_REFRESH_SECRET,
+  "Environment variable JWT_REFRESH_SECRET not set"
+);
 
 const server = express();
 
