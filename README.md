@@ -85,8 +85,35 @@ Returns JWT if authentication succeeds.
 
 ```json
 {
-  "id": "userId",
+  "sub": "userId",
+  "iat": 0000000000,
+  "exp": 0000000000
+}
+```
+
+### POST /refresh
+
+Uses refresh token to get access token.
+
+#### Headers
+
+| Header         | Value         |
+| :------------- | :------------ |
+| Authentication | REFRESH_TOKEN |
+
+#### Returns
+
+| Status      | Body       | Content-Type |
+| :---------- | :--------- | :----------- |
+| 201 CREATED | JWT string | text/plain   |
+
+##### JWT Payload
+
+```json
+{
+  "sub": "userId",
   "permissions": ["... users permissions"],
-  "iat": 0000000000
+  "iat": 0000000000,
+  "exp": 0000000000
 }
 ```
