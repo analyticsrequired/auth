@@ -4,11 +4,11 @@ import expressWinston from "express-winston";
 import passport from "passport";
 import passportJWT from "passport-jwt";
 import cors from "cors";
-import UserService from "./services/user";
 import logger from "./logger";
 import root from "./routes/root";
 import register from "./routes/register";
 import token from "./routes/token";
+import passportJwtStrategy from "./passportJwtStrategy";
 
 assert(process.env.JWT_SECRET, "Environment variable JWT_SECRET not set");
 
@@ -48,18 +48,6 @@ passport.use(
     passportJwtStrategy
   )
 );
-
-export async function passportJwtStrategy(payload, next) {
-  const userService = new UserService();
-
-  let user = await userService.getById(payload.sub);
-
-  if (user) {
-    next(null, { ...payload, user });
-  } else {
-    next(null, false);
-  }
-}
 
 server.use(passport.initialize());
 

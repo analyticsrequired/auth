@@ -1,4 +1,4 @@
-import { passportJwtStrategy } from "./server";
+import passportJwtStrategy from "./passportJwtStrategy";
 import { mockUserService } from "./setupJest";
 import UserService from "./services/user";
 
@@ -15,6 +15,8 @@ describe("passportJwtStrategy", () => {
     nextMock = jest.fn();
     expectedDbUser = {};
     userServiceMock = mockUserService(UserService);
+
+    process.env.JWT_REFRESH_SECRET = "";
   });
 
   describe("when user is found", () => {
