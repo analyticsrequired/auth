@@ -11,7 +11,7 @@
     "start:cold": "node dist/index.js",
     "prestart:dev": "npm run knex:latest",
     "start:dev": "nodemon --exec \"npm run start:cold\" --watch src",
-    "test": "jest --runInBand",
+    "test": "jest --color",
     "build": "rollup -c",
     "prepublish": "npm run test && npm run build",
     "pack-preview": "npm pack && tar -xvzf *.tgz && rm -rf package *.tgz",
