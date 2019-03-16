@@ -22,4 +22,10 @@ export default class UserService {
       password
     });
   }
+
+  async grant(userId, permissions) {
+    await db(tableName)
+      .update({ scope: permissions.join(" ") })
+      .where({ userId });
+  }
 }

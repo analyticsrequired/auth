@@ -117,3 +117,28 @@ Uses refresh token to get access token.
   "exp": 0000000000
 }
 ```
+
+### POST /grant
+
+Set user permissions
+
+#### Headers
+
+| Header         | Value        |
+| :------------- | :----------- |
+| Authentication | ACCESS_TOKEN |
+
+#### Example Body
+
+```json
+{
+  "userId": "userId",
+  "permissions": ["full", "list", "of", "permissions"]
+}
+```
+
+#### Returns
+
+| Status      |
+| :---------- |
+| 201 CREATED |
