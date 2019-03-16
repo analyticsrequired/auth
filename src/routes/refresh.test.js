@@ -1,13 +1,13 @@
 import jwt from "jsonwebtoken";
 import UserService from "../services/user";
-import { handler } from "./token";
+import { handler } from "./refresh";
 import { mockResponse, mockUserService } from "../setupJest";
 
 jest.mock("../services/user");
 jest.mock("../logger");
 jest.mock("jsonwebtoken");
 
-describe("token", () => {
+describe("refresh", () => {
   const expectedUserId = "test id";
   const expectedPassword = "test password";
   const expectedPermissions = ["test", "scope"];
@@ -24,7 +24,7 @@ describe("token", () => {
   let userServiceMock;
 
   beforeEach(() => {
-    process.env.JWT_REFRESH_SECRET = expectedJwtSecret;
+    process.env.JWT_SECRET = expectedJwtSecret;
 
     UserService.mockClear();
     userServiceMock = mockUserService(UserService);
@@ -33,9 +33,8 @@ describe("token", () => {
     jwt.sign.mockReturnValue(expectedToken);
 
     req = {
-      body: {
-        userId: expectedUserId,
-        password: expectedPassword
+      user: {
+        sub: expectedUserId
       }
     };
 
@@ -47,11 +46,12 @@ describe("token", () => {
 
     expect(jwt.sign).toBeCalledWith(
       {
-        sub: expectedUserId
+        sub: expectedUserId,
+        permissions: expectedPermissions
       },
       expectedJwtSecret,
       {
-        expiresIn: "24h"
+        expiresIn: "30m"
       }
     );
   });
@@ -62,21 +62,6 @@ describe("token", () => {
     expect(res.status).toBeCalledWith(201);
     expect(res.set).toBeCalledWith("Content-Type", "plain/text");
     expect(res.send).toBeCalledWith(expectedToken);
-  });
-
-  describe("when invalid credentials", () => {
-    beforeEach(() => {
-      req.body.password = "incorrect password";
-    });
-
-    it("should return error to user", async () => {
-      await handler(req, res);
-
-      expect(res.status).toBeCalledWith(401);
-      expect(res.json).toBeCalledWith({
-        error: "Invalid user id or password"
-      });
-    });
   });
 
   describe("when user isn't found", () => {

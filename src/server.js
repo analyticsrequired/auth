@@ -8,6 +8,7 @@ import logger from "./logger";
 import root from "./routes/root";
 import register from "./routes/register";
 import token from "./routes/token";
+import refresh from "./routes/refresh";
 import passportJwtStrategy from "./passportJwtStrategy";
 
 assert(process.env.JWT_SECRET, "Environment variable JWT_SECRET not set");
@@ -49,6 +50,17 @@ passport.use(
   )
 );
 
+passport.use(
+  "jwt-refresh-token",
+  new passportJWT.Strategy(
+    {
+      jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeaderWithScheme("jwt"),
+      secretOrKey: process.env.JWT_REFRESH_SECRET
+    },
+    passportJwtStrategy
+  )
+);
+
 server.use(passport.initialize());
 
 // Routes
@@ -56,6 +68,7 @@ server.use(passport.initialize());
 root(server);
 register(server);
 token(server);
+refresh(server);
 
 // Error Handling
 
