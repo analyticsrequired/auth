@@ -22,18 +22,16 @@ export const handler = async (req, res) => {
 
     if (user.password === password) {
       logger.info(
-        `User ${user.sub} is authenticated with permissions: ${JSON.stringify(
+        `User ${
+          user.userId
+        } is authenticated with permissions: ${JSON.stringify(
           user.permissions
         )}`
       );
 
-      const token = jwt.sign(
-        { sub: userId, permissions: user.permissions },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "24h"
-        }
-      );
+      const token = jwt.sign({ sub: userId }, process.env.JWT_REFRESH_SECRET, {
+        expiresIn: "24h"
+      });
 
       res
         .status(201)

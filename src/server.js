@@ -4,13 +4,18 @@ import expressWinston from "express-winston";
 import passport from "passport";
 import passportJWT from "passport-jwt";
 import cors from "cors";
-import UserService from "./services/user";
 import logger from "./logger";
 import root from "./routes/root";
 import register from "./routes/register";
 import token from "./routes/token";
+import refresh from "./routes/refresh";
+import passportJwtStrategy from "./passportJwtStrategy";
 
 assert(process.env.JWT_SECRET, "Environment variable JWT_SECRET not set");
+assert(
+  process.env.JWT_REFRESH_SECRET,
+  "Environment variable JWT_REFRESH_SECRET not set"
+);
 
 const server = express();
 
@@ -45,18 +50,18 @@ passport.use(
       jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeaderWithScheme("jwt"),
       secretOrKey: process.env.JWT_SECRET
     },
-    async (payload, next) => {
-      let user;
+    passportJwtStrategy
+  )
+);
 
-      if (payload.invitation) {
-        user = payload;
-      } else {
-        const userService = new UserService();
-        user = await userService.getById(payload.sub);
-      }
-
-      user ? next(null, user) : next(null, false);
-    }
+passport.use(
+  "jwt-refresh-token",
+  new passportJWT.Strategy(
+    {
+      jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeaderWithScheme("jwt"),
+      secretOrKey: process.env.JWT_REFRESH_SECRET
+    },
+    passportJwtStrategy
   )
 );
 
@@ -67,6 +72,7 @@ server.use(passport.initialize());
 root(server);
 register(server);
 token(server);
+refresh(server);
 
 // Error Handling
 
