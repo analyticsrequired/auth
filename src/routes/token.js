@@ -22,7 +22,9 @@ export const handler = async (req, res) => {
 
     if (user.password === password) {
       logger.info(
-        `User ${user.sub} is authenticated with permissions: ${JSON.stringify(
+        `User ${
+          user.userId
+        } is authenticated with permissions: ${JSON.stringify(
           user.permissions
         )}`
       );
