@@ -12,6 +12,7 @@ describe("UserService", () => {
   let insertMock;
   let firstMock;
   let whereMock;
+  let updateMock;
   let expectedUser;
 
   beforeEach(() => {
@@ -23,11 +24,13 @@ describe("UserService", () => {
     insertMock = jest.fn(() => instanceMock);
     firstMock = jest.fn(() => instanceMock);
     whereMock = jest.fn().mockResolvedValue(expectedUser);
+    updateMock = jest.fn(() => instanceMock);
 
     instanceMock = {
       insert: insertMock,
       first: firstMock,
-      where: whereMock
+      where: whereMock,
+      update: updateMock
     };
 
     db.mockImplementation(() => {
@@ -66,6 +69,20 @@ describe("UserService", () => {
       expect(insertMock).toBeCalledWith({
         userId: expectedUserId,
         password: expectedPassword
+      });
+    });
+  });
+
+  describe("grant", () => {
+    const expectedPermissions = ["foo", "bar"];
+
+    it("should grant permissions", async () => {
+      await userService.grant(expectedUserId, expectedPermissions);
+
+      expect(whereMock).toBeCalledWith({ userId: expectedUserId });
+
+      expect(updateMock).toBeCalledWith({
+        scope: "foo bar"
       });
     });
   });

@@ -9,6 +9,7 @@ import root from "./routes/root";
 import register from "./routes/register";
 import token from "./routes/token";
 import refresh from "./routes/refresh";
+import grant from "./routes/grant";
 import passportJwtStrategy from "./passportJwtStrategy";
 
 assert(process.env.JWT_SECRET, "Environment variable JWT_SECRET not set");
@@ -73,6 +74,7 @@ root(server);
 register(server);
 token(server);
 refresh(server);
+grant(server);
 
 // Error Handling
 

@@ -15,7 +15,8 @@ export const mockResponse = () => {
 export const mockUserService = UserServiceClass => {
   const mockImplementation = {
     getById: jest.fn(),
-    register: jest.fn()
+    register: jest.fn(),
+    grant: jest.fn()
   };
 
   UserServiceClass.mockImplementation(() => mockImplementation);
