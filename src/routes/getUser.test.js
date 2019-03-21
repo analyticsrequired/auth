@@ -1,18 +1,15 @@
-import jwt from "jsonwebtoken";
 import UserService from "../services/user";
-import { handler } from "./token";
+import { handler } from "./getUser";
 import { mockResponse, mockUserService } from "../setupJest";
 
 jest.mock("../services/user");
 jest.mock("../logger");
 jest.mock("jsonwebtoken");
 
-describe("token", () => {
+describe("getUser", () => {
   const expectedUserId = "test id";
   const expectedPassword = "test password";
   const expectedPermissions = ["test", "scope"];
-  const expectedJwtSecret = "expected jwt secret";
-  const expectedToken = "expected token";
   const expectedUser = {
     userId: expectedUserId,
     password: expectedPassword,
@@ -24,59 +21,25 @@ describe("token", () => {
   let userServiceMock;
 
   beforeEach(() => {
-    process.env.JWT_REFRESH_SECRET = expectedJwtSecret;
-
     UserService.mockClear();
     userServiceMock = mockUserService(UserService);
     userServiceMock.getById.mockResolvedValue(expectedUser);
 
-    jwt.sign.mockReturnValue(expectedToken);
-
     req = {
-      body: {
-        userId: expectedUserId,
-        password: expectedPassword
+      params: {
+        userId: expectedUserId
       }
     };
 
     res = mockResponse();
   });
 
-  it("should create correct jwt payload", async () => {
-    await handler(req, res);
-
-    expect(jwt.sign).toBeCalledWith(
-      {
-        sub: expectedUserId
-      },
-      expectedJwtSecret,
-      {
-        expiresIn: "24h"
-      }
-    );
-  });
-
   it("should return correct response", async () => {
     await handler(req, res);
 
-    expect(res.status).toBeCalledWith(201);
-    expect(res.set).toBeCalledWith("Content-Type", "plain/text");
-    expect(res.send).toBeCalledWith(expectedToken);
-  });
-
-  describe("when invalid credentials", () => {
-    beforeEach(() => {
-      req.body.password = "incorrect password";
-    });
-
-    it("should return error to user", async () => {
-      await handler(req, res);
-
-      expect(res.status).toBeCalledWith(401);
-      expect(res.json).toBeCalledWith({
-        error: "Invalid user id or password"
-      });
-    });
+    expect(res.status).toBeCalledWith(200);
+    expect(res.set).toBeCalledWith("Content-Type", "application/json");
+    expect(res.json).toBeCalledWith(expectedUser);
   });
 
   describe("when user isn't found", () => {
@@ -87,9 +50,9 @@ describe("token", () => {
     it("should return error to user", async () => {
       await handler(req, res);
 
-      expect(res.status).toBeCalledWith(401);
+      expect(res.status).toBeCalledWith(404);
       expect(res.json).toBeCalledWith({
-        error: "Invalid user id or password"
+        error: "Unknown user"
       });
     });
   });
@@ -106,7 +69,7 @@ describe("token", () => {
 
       expect(res.status).toBeCalledWith(500);
       expect(res.json).toBeCalledWith({
-        error: "An error occurred during authentication. Please resubmit."
+        error: "An error occurred."
       });
     });
   });
