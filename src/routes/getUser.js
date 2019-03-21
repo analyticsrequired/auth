@@ -1,8 +1,17 @@
+import passport from "passport";
+import expressJwtPermissions from "express-jwt-permissions";
 import UserService from "../services/user";
 import logger from "../logger";
 
+const guard = expressJwtPermissions();
+
 export default server => {
-  server.get("/user/:userId", handler);
+  server.get(
+    "/user/:userId",
+    passport.authenticate("jwt", { session: false }),
+    guard.check("admin"),
+    handler
+  );
 };
 
 export const handler = async (req, res) => {
