@@ -51,7 +51,7 @@ describe("refresh", () => {
       },
       expectedJwtSecret,
       {
-        expiresIn: "30m"
+        expiresIn: "60s"
       }
     );
   });

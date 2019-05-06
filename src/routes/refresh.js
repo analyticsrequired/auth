@@ -37,7 +37,7 @@ export const handler = async (req, res) => {
   const { permissions } = user;
 
   const token = jwt.sign({ sub, permissions }, process.env.JWT_SECRET, {
-    expiresIn: "30m"
+    expiresIn: "60s"
   });
 
   res
